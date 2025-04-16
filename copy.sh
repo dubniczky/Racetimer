@@ -1,0 +1,1 @@
+rsync -avz --exclude node_modules/ ./ racetimer@10.0.2.37:/home/racetimer/app
