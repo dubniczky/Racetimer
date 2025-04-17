@@ -79,6 +79,11 @@ window.electron.onGpioEvent((event, data) => {
     }
 });
 
+function buzzForLength(length) {
+    console.log(`Buzzing for ${length}ms`)
+    window.electron.sendGpioOutput(length)
+}
+
 function resetScoreboard() {
     scoreboard.forEach((contestant, index) => {
         contestant.standingDisplay.textContent = scoreboard[index].standing || '-'
@@ -113,6 +118,7 @@ function onStartPress() {
             }
         })
     }, 10)
+    buzzForLength(1000)
 }
 
 function onResetPress() {
@@ -156,4 +162,5 @@ function onContestantEvent(id) {
 
     scoreboard[id].timeDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
     scoreboard[id].msDisplay.textContent = `${milliseconds < 10 ? '0' : ''}${milliseconds}`
+    buzzForLength(200)
 }

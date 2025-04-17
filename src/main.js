@@ -1,4 +1,4 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('node:path');
 const pigpio = require('pigpio-client').pigpio;
 const gpioClient = pigpio();
@@ -100,6 +100,14 @@ app.whenReady().then(() => {
     buzzer = gpioClient.gpio(buzzerPin);
     buzzer.modeSet('output');
     buzzer.glitchSet(10000);
+    ipcMain.on('buzzer', (event, data) => {
+      console.log(`Buzzing signal received for ${data.length}ms`)
+      const length = data.length || 500; // Default to 500ms if no length is provided
+      buzzer.write(1); // Turn buzzer on
+        setTimeout(() => {
+          buzzer.write(0); // Turn buzzer off
+        }, length); // Buzz for 500ms
+    });
 
     console.log('GPIO setup complete');
     mainWindow.webContents.send('gpio-event', {

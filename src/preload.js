@@ -4,4 +4,5 @@ const { contextBridge, ipcRenderer } = require('electron');
 
 contextBridge.exposeInMainWorld('electron', {
     onGpioEvent: (callback) => ipcRenderer.on('gpio-event', callback),
+    sendGpioOutput: (length) => ipcRenderer.send('buzzer', { length }),
 });
