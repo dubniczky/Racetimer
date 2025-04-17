@@ -2,11 +2,76 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Hello World!</title>
+    <title>Race Clock</title>
+    <style>
+      body {
+        margin: 0;
+        background-color: black;
+        color: white;
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
 
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+      }
+
+      th, td {
+        border: none;
+        padding: 20px;
+        font-size: 3em;
+      }
+
+      .milliseconds {
+        font-size: 2em;
+      }
+
+      th {
+        display: none;
+      }
+      .timer {
+        font-size: 3em;
+      }
+      .winner {
+        color: green;
+      }
+    </style>
   </head>
   <body>
-    <h1>💖 Hello World!</h1>
-    <p>Welcome to your Electron application.</p>
+    <table>
+      <tbody>
+        <tr>
+          <td>A</td>
+          <td><span class="timer">00:00</span>.<span class="milliseconds">00</span></td>
+          <td class="standing">-</td>
+        </tr>
+        <tr>
+          <td>B</td>
+          <td><span class="timer">00:00</span>.<span class="milliseconds">00</span></td>
+          <td class="standing">-</td>
+        </tr>
+        <tr>
+          <td>C</td>
+          <td><span class="timer">00:00</span>.<span class="milliseconds">00</span></td>
+          <td class="standing">-</td>
+        </tr>
+        <tr>
+          <td>D</td>
+          <td><span class="timer">00:00</span>.<span class="milliseconds">00</span></td>
+          <td class="standing">-</td>
+        </tr>
+        <tr>
+          <td>E</td>
+          <td><span class="timer">00:00</span>.<span class="milliseconds">00</span></td>
+          <td class="standing">-</td>
+        </tr>
+      </tbody>
+    </table>
   </body>
 </html>

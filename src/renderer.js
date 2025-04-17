@@ -28,15 +28,110 @@
 
 import './index.css';
 
+// Load controls
+const maxContestants = 5
+const contestantNames = [ 'A', 'B', 'C', 'D', 'E' ]
+const secTimers = document.querySelectorAll('.timer');
+const msTimers = document.querySelectorAll('.milliseconds');
+const standings = document.querySelectorAll('.standing');
+const rows = document.querySelectorAll('tr');
+const scoreboard = []
+
+for (let i = 0; i < maxContestants; i++) {
+    scoreboard.push({
+        contestant: i,
+        timeDisplay: secTimers[i],
+        msDisplay: msTimers[i],
+        standingDisplay: standings[i],
+        tableRow: rows[i],
+    });
+}
+
+// Set up contestants
+const contestants = []
+for (let i = 0; i < maxContestants; i++) {
+    const contestant = {
+        id: i,
+        name: contestantNames[i],
+        time: 0,
+        ms: 0,
+        stopped: false
+    };
+    contestants.push(contestant);
+}
+
+
+function resetScoreboard() {
+    scoreboard.forEach((contestant, index) => {
+        contestant.standingDisplay.textContent = scoreboard[index].standing || '-'
+        contestant.timeDisplay.textContent = '00:00';
+        contestant.msDisplay.textContent = '00';
+    });
+}
+
 window.electron.onGpioEvent((event, data) => {
     console.log(`GPIO Event:`, data);
 
     // Example: Handle specific button events
     if (data.type === 'contestant') {
-        console.log(`Contestant button ${data.index} pressed:`, data);
+        if (data.value === 1) {
+            onContestantEvent(data.index)
+        }
     } else if (data.type === 'reset') {
-        console.log('Reset button pressed:', data);
+        resetScoreboard()
     } else if (data.type === 'start') {
-        console.log('Start button pressed:', data);
+        if (data.value === 1) {
+            onStartPress()
+        }
     }
 });
+
+let startTime = 0
+let counterInterval = null
+let currentStanding = 1
+function onStartPress() {
+    resetScoreboard()
+    // Start counter that increases the times continuously
+    console.log(`Start button pressed at ${new Date().toISOString()}`)
+    startTime = Date.now()
+    counterInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime
+        const minutes = Math.floor((elapsed / 1000 / 60) % 60)
+        const seconds = Math.floor((elapsed / 1000) % 60)
+        const milliseconds = Math.floor((elapsed % 1000) / 10)
+
+        const timeText = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+        const msText = `${milliseconds < 10 ? '0' : ''}${milliseconds}`
+
+        scoreboard.forEach((contestant, index) => {
+            if (!contestants[index].stopped) {
+                contestant.timeDisplay.textContent = timeText
+                contestant.msDisplay.textContent = msText
+            }
+        })
+    }, 10)
+}
+
+function onContestantEvent(id) {
+    const contestant = contestants[id]
+    if (contestant.stopped) {
+        console.log(`Contestant ${contestant.name} already stopped`)
+        return
+    }
+
+    // Stop the contestant
+    contestant.stopped = true
+
+    // Calculate time difference
+    const elapsed = Date.now() - startTime
+    const minutes = Math.floor((elapsed / 1000 / 60) % 60)
+    const seconds = Math.floor((elapsed / 1000) % 60)
+    const milliseconds = Math.floor((elapsed % 1000) / 10)
+
+    // Update scoreboard
+    scoreboard[id].standing = currentStanding++
+    scoreboard[id].standingDisplay.textContent = scoreboard[id].standing
+
+    scoreboard[id].timeDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
+    scoreboard[id].msDisplay.textContent = `${milliseconds < 10 ? '0' : ''}${milliseconds}`
+}
