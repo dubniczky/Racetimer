@@ -125,16 +125,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function onResetPress() {
-        resetScoreboard()
-        contestants.forEach(contestant => {
-            contestant.stopped = false
-        })
         currentStanding = 1
+        startTime = 0
         if (counterInterval) {
             clearInterval(counterInterval)
             counterInterval = null
         }
-        startTime = 0
+        resetScoreboard()
+        contestants.forEach(contestant => {
+            contestant.stopped = false
+        })
     }
 
     function onContestantEvent(id) {

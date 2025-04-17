@@ -1,0 +1,15 @@
+[Unit]
+Description=Racetimer
+After=network.target
+
+[Service]
+Type=simple
+User=racetimer
+WorkingDirectory=/home/racetimer/app
+ExecStart=racetimer
+Restart=always
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=/home/racetimer/.Xauthority
+
+[Install]
+WantedBy=graphical.target
