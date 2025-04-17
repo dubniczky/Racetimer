@@ -1,1 +1,0 @@
-rsync -avz --exclude node_modules/ --exclude .webpack/ ./ racetimer@10.0.2.37:/home/racetimer/app
