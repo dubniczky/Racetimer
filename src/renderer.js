@@ -60,15 +60,6 @@ for (let i = 0; i < maxContestants; i++) {
     contestants.push(contestant);
 }
 
-
-function resetScoreboard() {
-    scoreboard.forEach((contestant, index) => {
-        contestant.standingDisplay.textContent = scoreboard[index].standing || '-'
-        contestant.timeDisplay.textContent = '00:00';
-        contestant.msDisplay.textContent = '00';
-    });
-}
-
 window.electron.onGpioEvent((event, data) => {
     console.log(`GPIO Event:`, data);
 
@@ -78,13 +69,25 @@ window.electron.onGpioEvent((event, data) => {
             onContestantEvent(data.index)
         }
     } else if (data.type === 'reset') {
-        resetScoreboard()
+        if (data.value === 1) {
+            onResetPress()
+        }
     } else if (data.type === 'start') {
         if (data.value === 1) {
             onStartPress()
         }
     }
 });
+
+function resetScoreboard() {
+    scoreboard.forEach((contestant, index) => {
+        contestant.standingDisplay.textContent = scoreboard[index].standing || '-'
+        contestant.timeDisplay.textContent = '00:00'
+        contestant.msDisplay.textContent = '00'
+        contestant.tableRow.classList.remove('winner')
+        contestant.standingDisplay.textContent = '-'
+    });
+}
 
 let startTime = 0
 let counterInterval = null
@@ -112,6 +115,19 @@ function onStartPress() {
     }, 10)
 }
 
+function onResetPress() {
+    resetScoreboard()
+    contestants.forEach(contestant => {
+        contestant.stopped = false
+    })
+    currentStanding = 1
+    if (counterInterval) {
+        clearInterval(counterInterval)
+        counterInterval = null
+    }
+    startTime = 0
+}
+
 function onContestantEvent(id) {
     const contestant = contestants[id]
     if (contestant.stopped) {
@@ -129,6 +145,12 @@ function onContestantEvent(id) {
     const milliseconds = Math.floor((elapsed % 1000) / 10)
 
     // Update scoreboard
+    if (currentStanding == 1) {
+        scoreboard[id].tableRow.classList.add('winner')
+    } else if (currentStanding > maxContestants) {
+        console.log(`All contestants have finished`)
+        return
+    }
     scoreboard[id].standing = currentStanding++
     scoreboard[id].standingDisplay.textContent = scoreboard[id].standing
 
