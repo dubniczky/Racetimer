@@ -60,11 +60,13 @@ for (let i = 0; i < maxContestants; i++) {
     contestants.push(contestant);
 }
 
+let contestantButtonStates = new Array(maxContestants).fill(false);
 window.electron.onGpioEvent((event, data) => {
     console.log(`GPIO Event:`, data);
 
     // Example: Handle specific button events
     if (data.type === 'contestant') {
+        contestantButtonStates[data.index] = data.value === 1
         if (data.value === 1) {
             onContestantEvent(data.index)
         }
@@ -138,6 +140,11 @@ function onContestantEvent(id) {
     const contestant = contestants[id]
     if (contestant.stopped) {
         console.log(`Contestant ${contestant.name} already stopped`)
+        return
+    }
+
+    if (startTime == 0) {
+        console.log(`Contestant ${contestant.name} button press when the race is stopped`)
         return
     }
 
