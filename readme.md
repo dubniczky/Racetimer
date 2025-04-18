@@ -2,7 +2,7 @@
 
 A Raspberry Pi application for timing races with GPIO inputs and a UI
 
-## Technical specs
+## Technical Specs
 
 - SOC: Raspberry Pi B+
 - Inputs: 5 buttons connected to GPIO pins
@@ -10,6 +10,10 @@ A Raspberry Pi application for timing races with GPIO inputs and a UI
 - GPIO Provider: `pigpiod` system level service as `root`
 - UI + Logic: ElectronJS as system service
 - Backend: NodeJS v18.10
+
+## Technical Overview
+
+Reading information from the GPIO headers requires root privileges on said computer. This means that it's difficult to connect it with traditional UI-based applications which should not be ran as root. This solution utilized the `pigpiod` service running as the root to provide an interface for other local users to connect via localhost. The ElectronJS application connects to this API and polls the information on an event-driven basis. The applications is added as a service with the name `racetimer` to start it up with the system.
 
 ## Usage
 
