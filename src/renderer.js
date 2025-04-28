@@ -91,7 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreboard.forEach((contestant, index) => {
             contestant.standingDisplay.textContent = scoreboard[index].standing || '-'
             contestant.timeDisplay.textContent = '00:00'
-            contestant.msDisplay.textContent = '00'
+            contestant.msDisplay.textContent = '.00'
             contestant.tableRow.classList.remove('winner')
             contestant.standingDisplay.textContent = '-'
         });
@@ -112,7 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const milliseconds = Math.floor((elapsed % 1000) / 10)
 
             const timeText = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-            const msText = `${milliseconds < 10 ? '0' : ''}${milliseconds}`
+            const msText = `.${milliseconds < 10 ? '0' : ''}${milliseconds}`
 
             scoreboard.forEach((contestant, index) => {
                 if (!contestants[index].stopped) {
@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreboard[id].standingDisplay.textContent = scoreboard[id].standing
 
         scoreboard[id].timeDisplay.textContent = `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`
-        scoreboard[id].msDisplay.textContent = `${milliseconds < 10 ? '0' : ''}${milliseconds}`
+        scoreboard[id].msDisplay.textContent = `.${milliseconds < 10 ? '0' : ''}${milliseconds}`
         buzzForLength(200)
     }
 })
