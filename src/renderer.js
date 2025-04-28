@@ -101,9 +101,22 @@ document.addEventListener('DOMContentLoaded', () => {
     let counterInterval = null
     let currentStanding = 1
     function onStartPress() {
-        resetScoreboard()
         // Start counter that increases the times continuously
         console.log(`Start button pressed at ${new Date().toISOString()}`)
+
+        if (startTime > 0) {
+            // Match already started, stopping
+            console.log(`Match already started -> stopping`)
+            if (counterInterval) {
+                clearInterval(counterInterval)
+                counterInterval = null
+            }
+            startTime = 0
+            buzzForLength(300)
+            return
+        }
+
+        resetScoreboard()
         startTime = Date.now()
         counterInterval = setInterval(() => {
             const elapsed = Date.now() - startTime
